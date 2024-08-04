@@ -1,0 +1,11 @@
+Package: rmon
+Title: Monitor Changes In Source Code And Auto-restart Your Server.
+Version: 0.0.0.9000
+Authors@R: 
+    person("Kennedy", "Mwavu", , "mwavukennedy@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0006-3157-7234"))
+Description: R's equivalent of 'nodemon'. Monitors changes in your source and automatically restarts/reruns your server.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
