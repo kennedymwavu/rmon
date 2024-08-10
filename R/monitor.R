@@ -7,7 +7,8 @@
 #' @param ext Character vector. Extensions to watch. Defaults to `.R` files.
 #' @param exclude_files Character vector. Files to exclude. Changes to these
 #' files will not cause a restart/reload of your script. Default is `NULL`.
-#' @param exclude_patterns Character vector. File patterns to exclude.
+#' @param exclude_patterns Character vector. File patterns to exclude. Excludes
+#' any files in `dir` whose names have these patterns.
 #' @param exclude_dirs Character vector. Directories to exclude.
 #' @param delay Length one numeric. Number of seconds to wait before checking
 #' for file changes again. Defaults to `1`.
@@ -59,7 +60,13 @@ monitor <- \(
       recursive = TRUE
     )
 
-    to_exclude <- character()
+    if (!is.null(exclude_patterns)) {
+      patterns_to_exclude <- grepl(
+        pattern = exclude_patterns,
+        x = basename(files)
+      )
+      files <- files[!patterns_to_exclude]
+    }
 
     if (!is.null(exclude_dirs)) {
       dirs_to_exclude <- file.path(dir, exclude_dirs) |>
@@ -69,17 +76,13 @@ monitor <- \(
           full.names = TRUE,
           recursive = TRUE
         )
-      to_exclude <- c(to_exclude, dirs_to_exclude)
+      files <- files[!files %in% dirs_to_exclude]
     }
 
     if (!is.null(exclude_files)) {
       files_to_exclude <- file.path(dir, exclude_files) |> normalizePath()
-      to_exclude <- c(to_exclude, files_to_exclude)
+      files <- files[!files %in% files_to_exclude]
     }
-
-    to_exclude <- unique(to_exclude)
-
-    files <- files[!files %in% to_exclude]
 
     file.info(files)
   }
