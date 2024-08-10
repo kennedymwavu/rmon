@@ -69,11 +69,11 @@ to ignore the file `dev.R`, do:
 rmon::monitor(
   dir = ".",
   file = "app.R",
-  ignore = "dev.R"
+  exclude_files = "dev.R"
 )
 ```
 
-- `ignore`: character vector
+- `exclude_files`: character vector
 
 to ignore the directory `test/` as well:
 
@@ -81,7 +81,20 @@ to ignore the directory `test/` as well:
 rmon::monitor(
   dir = ".",
   file = "app.R",
-  ignore = c("dev.R", "test")
+  exclude_files = "dev.R"
+  exclude_dirs = "test"
+)
+```
+
+to ignore all files whose names match the pattern `test` as well:
+
+```r
+rmon::monitor(
+  dir = ".",
+  file = "app.R",
+  exclude_files = "dev.R"
+  exclude_dirs = c("test"),
+  exclude_patterns = "test"
 )
 ```
 
