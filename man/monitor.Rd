@@ -4,7 +4,15 @@
 \alias{monitor}
 \title{Monitor files for changes}
 \usage{
-monitor(dir = getwd(), file, ext = "R", ignore = NULL, delay = 1)
+monitor(
+  dir = getwd(),
+  file,
+  ext = "R",
+  exclude_files = NULL,
+  exclude_patterns = NULL,
+  exclude_dirs = NULL,
+  delay = 1
+)
 }
 \arguments{
 \item{dir}{Character vector. Directory to monitor for changes. Can be
@@ -15,8 +23,12 @@ multiple. Defaults to the directory from where this function is called from.}
 
 \item{ext}{Character vector. Extensions to watch. Defaults to \code{.R} files.}
 
-\item{ignore}{Character vector. Files or directories to ignore. Default is
-\code{NULL}.}
+\item{exclude_files}{Character vector. Files to exclude. Changes to these
+files will not cause a restart/reload of your script. Default is \code{NULL}.}
+
+\item{exclude_patterns}{Character vector. File patterns to exclude.}
+
+\item{exclude_dirs}{Character vector. Directories to exclude.}
 
 \item{delay}{Length one numeric. Number of seconds to wait before checking
 for file changes again. Defaults to \code{1}.}
