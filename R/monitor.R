@@ -37,8 +37,7 @@ monitor <- \(
 
   cat(
     dashes(),
-    sprintf("%s Starting rmon...", now()),
-    dashes(),
+    sprintf("%s Starting rmon...\n", now()),
     sep = "\n"
   )
 
@@ -67,7 +66,6 @@ monitor <- \(
     )
   }
 
-
   file_info <- get_file_info()
   p <- start_new_process()
   on.exit(p$kill())
@@ -80,17 +78,12 @@ monitor <- \(
 
       cat(
         dashes(),
-        "Files changed. Restarting...",
+        sprintf("%s Files changed. Restarting...\n", now()),
         sep = "\n"
       )
       p$kill()
 
       p <- start_new_process()
-      cat(
-        paste(now(), "Success!"),
-        dashes(),
-        sep = "\n"
-      )
     }
 
     Sys.sleep(time = delay)
