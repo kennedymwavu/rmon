@@ -1,23 +1,52 @@
-#' Monitor files for changes
+#' Monitor files for changes and rerun specified script
 #'
-#' @param dir Character vector. Directory to monitor for changes. Can be
-#' multiple. Defaults to the directory from where this function is called from.
-#' @param file String, file path. File to rerun when changes are detected in
-#' `dir`.
-#' @param ext Character vector. Extensions to watch. Defaults to `.R` files.
-#' @param exclude_files Character vector. Files to exclude. Changes to these
-#' files will not cause a restart/reload of your script. Default is `NULL`.
-#' @param exclude_patterns Character vector. File patterns to exclude. Excludes
-#' any files in `dir` whose names have these patterns.
-#' @param exclude_dirs Character vector. Directories to exclude.
-#' @param delay Length one numeric. Number of seconds to wait before checking
-#' for file changes again. Defaults to `1`.
+#' @description
+#' Monitors specified directories for file changes and reruns a designated
+#' R script when changes are detected. It's designed to automate the process
+#' of reloading your R applications during development, similar to nodemon
+#' for Node.js.
+#'
+#' @param dir Character vector. Directory or directories to monitor for changes.
+#' Defaults to the current working directory.
+#' @param file String, file path. Path to the R script to rerun when changes
+#' are detected.
+#' @param ext Character vector. File extensions to watch.
+#' Defaults to `c(".R", ".r")` files.
+#' @param exclude_files Character vector. Specific files to ignore. Changes
+#' to these files will not trigger a script rerun. Default is `NULL`.
+#' @param exclude_patterns Character vector. File name patterns to ignore. Any
+#' files in `dir` with names matching these patterns will be ignored. Default
+#' is `NULL`.
+#' @param exclude_dirs Character vector. Directories to exclude from
+#' monitoring. Default is `NULL`.
+#' @param delay Numeric. Number of seconds to wait before checking
+#' for file changes. Defaults to `1`.
+#'
+#' @details
+#' The monitoring process can be customized by excluding specific files, file
+#' patterns, or entire directories. This allows you to ignore changes to files
+#' that shouldn't trigger a reload (eg. temporary files, log files, etc.).
+#'
+#' If multiple directories are supplied, `file` is assumed to be in the first
+#' directory.
+#'
+#' The function runs indefinitely until interrupted.
 #' @examples
 #' \dontrun{
+#' # monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
+#' # any files in 'test/' directory:
 #' rmon::monitor(
 #'   dir = ".",
 #'   file = "app.R",
-#'   ignore = c("dev.R", "test")
+#'   exclude_files = "dev.R",
+#'   exclude_dirs = "test"
+#' )
+#'
+#' # monitor multiple directories, watch only `.R` & `.Rmd` files:
+#' rmon::monitor(
+#'   dir = c("src", "scripts"),
+#'   file = "main.R",
+#'   ext = c(".R", ".Rmd")
 #' )
 #' }
 #' @return NULL
@@ -25,13 +54,13 @@
 monitor <- \(
   dir = getwd(),
   file,
-  ext = "R",
+  ext = c(".R", ".r"),
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
   delay = 1
 ) {
-  file <- file.path(dir, file) |> normalizePath()
+  file <- file.path(dir[[1]], file) |> normalizePath()
   if (!file.exists(file)) {
     msg <- sprintf("File '%s' not found!", file)
     stop(msg, call. = FALSE)

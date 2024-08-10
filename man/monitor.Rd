@@ -2,12 +2,12 @@
 % Please edit documentation in R/monitor.R
 \name{monitor}
 \alias{monitor}
-\title{Monitor files for changes}
+\title{Monitor files for changes and rerun specified script}
 \usage{
 monitor(
   dir = getwd(),
   file,
-  ext = "R",
+  ext = c(".R", ".r"),
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
@@ -15,33 +15,60 @@ monitor(
 )
 }
 \arguments{
-\item{dir}{Character vector. Directory to monitor for changes. Can be
-multiple. Defaults to the directory from where this function is called from.}
+\item{dir}{Character vector. Directory or directories to monitor for changes.
+Defaults to the current working directory.}
 
-\item{file}{String, file path. File to rerun when changes are detected in
-\code{dir}.}
+\item{file}{String, file path. Path to the R script to rerun when changes
+are detected.}
 
-\item{ext}{Character vector. Extensions to watch. Defaults to \code{.R} files.}
+\item{ext}{Character vector. File extensions to watch.
+Defaults to \code{c(".R", ".r")} files.}
 
-\item{exclude_files}{Character vector. Files to exclude. Changes to these
-files will not cause a restart/reload of your script. Default is \code{NULL}.}
+\item{exclude_files}{Character vector. Specific files to ignore. Changes
+to these files will not trigger a script rerun. Default is \code{NULL}.}
 
-\item{exclude_patterns}{Character vector. File patterns to exclude.}
+\item{exclude_patterns}{Character vector. File name patterns to ignore. Any
+files in \code{dir} with names matching these patterns will be ignored. Default
+is \code{NULL}.}
 
-\item{exclude_dirs}{Character vector. Directories to exclude.}
+\item{exclude_dirs}{Character vector. Directories to exclude from
+monitoring. Default is \code{NULL}.}
 
-\item{delay}{Length one numeric. Number of seconds to wait before checking
-for file changes again. Defaults to \code{1}.}
+\item{delay}{Numeric. Number of seconds to wait before checking
+for file changes. Defaults to \code{1}.}
 }
 \description{
-Monitor files for changes
+Monitors specified directories for file changes and reruns a designated
+R script when changes are detected. It's designed to automate the process
+of reloading your R applications during development, similar to nodemon
+for Node.js.
+}
+\details{
+The monitoring process can be customized by excluding specific files, file
+patterns, or entire directories. This allows you to ignore changes to files
+that shouldn't trigger a reload (eg. temporary files, log files, etc.).
+
+If multiple directories are supplied, \code{file} is assumed to be in the first
+directory.
+
+The function runs indefinitely until interrupted.
 }
 \examples{
 \dontrun{
+# monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
+# any files in 'test/' directory:
 rmon::monitor(
   dir = ".",
   file = "app.R",
-  ignore = c("dev.R", "test")
+  exclude_files = "dev.R",
+  exclude_dirs = "test"
+)
+
+# monitor multiple directories, watch only `.R` & `.Rmd` files:
+rmon::monitor(
+  dir = c("src", "scripts"),
+  file = "main.R",
+  ext = c(".R", ".Rmd")
 )
 }
 }
