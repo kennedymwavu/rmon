@@ -9,9 +9,6 @@
 #' `NULL`.
 #' @param delay Length one numeric. Number of seconds to wait before checking
 #' for file changes again. Defaults to `1`.
-#' @param log_file String, file path. Log file. Defaults to `NULL`.
-#' @param clear_log_file Logical. Clear log file on each change? Defaults to
-#' `FALSE`.
 #' @examples
 #' \dontrun{
 #' rmon::monitor(
@@ -27,22 +24,11 @@ monitor <- \(
   file,
   ext = "R",
   ignore = NULL,
-  delay = 1,
-  log_file = NULL,
-  clear_log_file = FALSE
+  delay = 1
 ) {
   file <- file.path(dir, file) |> normalizePath()
   if (!file.exists(file)) {
     msg <- sprintf("File '%s' not found!", file)
-    stop(msg, call. = FALSE)
-  }
-
-  log_file <- normalizePath(log_file)
-  if (!file.exists(log_file)) {
-    msg <- sprintf(
-      "Log file not found. Path '%s' does not exist!",
-      log_file
-    )
     stop(msg, call. = FALSE)
   }
 
@@ -98,10 +84,6 @@ monitor <- \(
         sep = "\n"
       )
       p$kill()
-
-      if (clear_log_file) {
-        cat("", file = log_file, sep = "\n", append = FALSE)
-      }
 
       p <- start_new_process()
       cat(

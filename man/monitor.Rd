@@ -4,15 +4,7 @@
 \alias{monitor}
 \title{Monitor files for changes}
 \usage{
-monitor(
-  dir = getwd(),
-  file,
-  ext = "R",
-  ignore = NULL,
-  delay = 1,
-  log_file = NULL,
-  clear_log_file = FALSE
-)
+monitor(dir = getwd(), file, ext = "R", ignore = NULL, delay = 1)
 }
 \arguments{
 \item{dir}{Character vector. Directory to monitor for changes. Can be
@@ -28,11 +20,6 @@ multiple. Defaults to the directory from where this function is called from.}
 
 \item{delay}{Length one numeric. Number of seconds to wait before checking
 for file changes again. Defaults to \code{1}.}
-
-\item{log_file}{String, file path. Log file. Defaults to \code{NULL}.}
-
-\item{clear_log_file}{Logical. Clear log file on each change? Defaults to
-\code{FALSE}.}
 }
 \description{
 Monitor files for changes
