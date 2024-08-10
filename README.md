@@ -14,15 +14,15 @@ can be used to auto-reload:
 
 just like nodemon, **rmon** is perfect for development.
 
-# Installation
+# installation
 
-Install the dev version from GitHub:
+install the dev version from GitHub:
 
 ```r
 remotes::install_github(repo = "kennedymwavu/rmon")
 ```
 
-# Usage
+# usage
 
 ```r
 rmon::monitor(
