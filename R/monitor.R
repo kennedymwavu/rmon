@@ -51,23 +51,27 @@
 #' }
 #' @return NULL
 #' @export
-monitor <- \(
-  dir = getwd(),
-  file,
-  ext = c(".R", ".r"),
-  exclude_files = NULL,
-  exclude_patterns = NULL,
-  exclude_dirs = NULL,
-  delay = 1
-) {
-  file <- file.path(dir[[1]], file) |> normalizePath()
+monitor <- function(
+    dir = getwd(),
+    file,
+    ext = c(".R", ".r"),
+    exclude_files = NULL,
+    exclude_patterns = NULL,
+    exclude_dirs = NULL,
+    delay = 1) {
+  file <- normalizePath(path = file.path(dir[[1]], file))
   if (!file.exists(file)) {
     msg <- sprintf("File '%s' not found!", file)
     stop(msg, call. = FALSE)
   }
 
-  now <- \() format(Sys.time(), "%c")
-  dashes <- \() "---------------------------------------------------------"
+  now <- function() {
+    format(Sys.time(), "%c")
+  }
+
+  dashes <- function() {
+    "---------------------------------------------------------"
+  }
 
   cat(
     dashes(),
@@ -75,7 +79,7 @@ monitor <- \(
     sep = "\n"
   )
 
-  get_file_info <- \() {
+  get_file_info <- function() {
     patterns <- paste0(
       "\\.",
       gsub(pattern = "\\.", replacement = "", x = ext),
@@ -98,18 +102,17 @@ monitor <- \(
     }
 
     if (!is.null(exclude_dirs)) {
-      dirs_to_exclude <- file.path(dir, exclude_dirs) |>
-        normalizePath() |>
-        list.files(
-          pattern = patterns,
-          full.names = TRUE,
-          recursive = TRUE
-        )
+      dirs_to_exclude <- list.files(
+        path = normalizePath(path = file.path(dir, exclude_dirs)),
+        pattern = patterns,
+        full.names = TRUE,
+        recursive = TRUE
+      )
       files <- files[!files %in% dirs_to_exclude]
     }
 
     if (!is.null(exclude_files)) {
-      files_to_exclude <- file.path(dir, exclude_files) |> normalizePath()
+      files_to_exclude <- normalizePath(path = file.path(dir, exclude_files))
       files <- files[!files %in% files_to_exclude]
     }
 
@@ -117,7 +120,7 @@ monitor <- \(
   }
 
 
-  start_new_process <- \() {
+  start_new_process <- function() {
     processx::process$new(
       command = "Rscript",
       args = file,
