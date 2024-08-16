@@ -16,6 +16,12 @@ just like nodemon, **rmon** is perfect for development.
 
 # installation
 
+to install the package from CRAN use:
+
+```r
+install.packages("rmon")
+```
+
 install the dev version from GitHub:
 
 ```r
