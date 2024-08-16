@@ -12,6 +12,11 @@
 #' are detected.
 #' @param ext Character vector. File extensions to watch.
 #' Defaults to `c(".R", ".r")` files.
+#' @param monitor_hidden Logical. Should hidden files be monitored for changes?
+#' Default is `FALSE`.
+#' Hidden files are those whose names start with a dot eg. `.Renviron`, `.env`,
+#' etc.
+#' This option is especially helpful when `ext = "*"`.
 #' @param exclude_files Character vector. Specific files to ignore. Changes
 #' to these files will not trigger a script rerun. Default is `NULL`.
 #' @param exclude_patterns Character vector. File name patterns to ignore. Any
@@ -38,6 +43,8 @@
 #' rmon::monitor(
 #'   dir = ".",
 #'   file = "app.R",
+#'   ext = "*",
+#'   monitor_hidden = TRUE,
 #'   exclude_files = "dev.R",
 #'   exclude_dirs = "test"
 #' )
@@ -55,6 +62,7 @@ monitor <- function(
     dir = getwd(),
     file,
     ext = c(".R", ".r"),
+    monitor_hidden = FALSE,
     exclude_files = NULL,
     exclude_patterns = NULL,
     exclude_dirs = NULL,
@@ -89,6 +97,7 @@ monitor <- function(
     files <- list.files(
       path = dir,
       pattern = patterns,
+      all.files = monitor_hidden,
       full.names = TRUE,
       recursive = TRUE
     )
@@ -105,6 +114,7 @@ monitor <- function(
       dirs_to_exclude <- list.files(
         path = normalizePath(path = file.path(dir, exclude_dirs)),
         pattern = patterns,
+        all.files = monitor_hidden,
         full.names = TRUE,
         recursive = TRUE
       )
