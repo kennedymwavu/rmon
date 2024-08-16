@@ -90,26 +90,22 @@
 </h1>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
-<span>  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"path-to-another-dir"</span><span class="op">)</span>,</span>
+<span>  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"path-to-first-dir"</span>, <span class="st">"path-to-another-dir"</span><span class="op">)</span>,</span>
 <span>  file <span class="op">=</span> <span class="st">"app.R"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>if multiple directories are specified, <code>file</code> is assumed to be in the first directory.</p>
 </div>
 <div class="section level1">
 <h1 id="specify-extension-watch-list">specify extension watch list<a class="anchor" aria-label="anchor" href="#specify-extension-watch-list"></a>
 </h1>
-<p>by default, <a href="https://mwavu.com/rmon/" class="external-link">rmon</a> monitors only <code>.R</code> files in <code>dir</code> for changes.</p>
-<p>to watch <code>.R</code>, <code>.html</code>, <code>.css</code> and <code>.js</code> files:</p>
+<p>by default, <a href="https://mwavu.com/rmon/" class="external-link">rmon</a> monitors all files in <code>dir</code> for changes.</p>
+<p>to watch only <code>.R</code>, <code>.html</code>, <code>.css</code> and <code>.js</code> files, set the <code>ext</code> parameter:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
 <span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>
 <span>  ext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"html"</span>, <span class="st">"css"</span>, <span class="st">"js"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>
-<code>ext</code>: character vector. extensions to watch.</li>
-</ul>
-<p>specifying <code>ext = "*"</code> watches all files in <code>dir</code> for changes.</p>
 </div>
 <div class="section level1">
 <h1 id="ignoring-files">ignoring files<a class="anchor" aria-label="anchor" href="#ignoring-files"></a>
@@ -121,25 +117,27 @@
 <span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>
 <span>  exclude_files <span class="op">=</span> <span class="st">"dev.R"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>
-<code>exclude_files</code>: character vector</li>
-</ul>
-<p>to ignore the directory <code>test/</code> as well:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rmon<span class="sc">::</span><span class="fu">monitor</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">dir =</span> <span class="st">"."</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"app.R"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">exclude_files =</span> <span class="st">"dev.R"</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">exclude_dirs =</span> <span class="st">"test"</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
-<p>to ignore all files whose names match the pattern <code>test</code> as well:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>rmon<span class="sc">::</span><span class="fu">monitor</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">dir =</span> <span class="st">"."</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"app.R"</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">exclude_files =</span> <span class="st">"dev.R"</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">exclude_dirs =</span> <span class="fu">c</span>(<span class="st">"test"</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">exclude_patterns =</span> <span class="st">"test"</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span></code></pre></div>
+<p>to ignore the directory <code>test/</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
+<span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>
+<span>  exclude_dirs <span class="op">=</span> <span class="st">"test"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>to ignore all files whose names match the pattern <code>test</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
+<span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>
+<span>  exclude_patterns <span class="op">=</span> <span class="st">"test"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>to ignore changes to hidden files, set <code>monitor_hidden = FALSE</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
+<span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>
+<span>  monitor_hidden <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="delaying-restarting">delaying restarting<a class="anchor" aria-label="anchor" href="#delaying-restarting"></a>
@@ -147,7 +145,7 @@
 <p>in some situations, you may want to delay restarting until multiple files have changed.</p>
 <p>by default, <strong>rmon</strong> checks for file changes every second. if you’re uploading or modifying multiple files, this can lead to unnecessary multiple restarts of your application.</p>
 <p>to delay restarting and avoid this issue, use the <code>delay</code> parameter:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu"><a href="reference/monitor.html">monitor</a></span><span class="op">(</span></span>
 <span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span>

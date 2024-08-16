@@ -50,8 +50,8 @@ for Node.js.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">monitor</span><span class="op">(</span></span>
 <span>  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">file</span>,</span>
-<span>  ext <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".R"</span>, <span class="st">".r"</span><span class="op">)</span>,</span>
-<span>  monitor_hidden <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ext <span class="op">=</span> <span class="st">"*"</span>,</span>
+<span>  monitor_hidden <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  exclude_files <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  exclude_patterns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  exclude_dirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -75,12 +75,12 @@ are detected.</p></dd>
 
 <dt id="arg-ext">ext<a class="anchor" aria-label="anchor" href="#arg-ext"></a></dt>
 <dd><p>Character vector. File extensions to watch.
-Defaults to <code>c(".R", ".r")</code> files.</p></dd>
+"*" (the default) watches all files in <code>dir</code>.</p></dd>
 
 
 <dt id="arg-monitor-hidden">monitor_hidden<a class="anchor" aria-label="anchor" href="#arg-monitor-hidden"></a></dt>
 <dd><p>Logical. Should hidden files be monitored for changes?
-Default is <code>FALSE</code>.
+Default is <code>TRUE</code>.
 Hidden files are those whose names start with a dot eg. <code>.Renviron</code>, <code>.env</code>,
 etc.
 This option is especially helpful when <code>ext = "*"</code>.</p></dd>
@@ -125,8 +125,6 @@ directory.</p>
 <span class="r-in"><span><span class="fu">rmon</span><span class="fu">::</span><span class="fu">monitor</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  dir <span class="op">=</span> <span class="st">"."</span>,</span></span>
 <span class="r-in"><span>  file <span class="op">=</span> <span class="st">"app.R"</span>,</span></span>
-<span class="r-in"><span>  ext <span class="op">=</span> <span class="st">"*"</span>,</span></span>
-<span class="r-in"><span>  monitor_hidden <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  exclude_files <span class="op">=</span> <span class="st">"dev.R"</span>,</span></span>
 <span class="r-in"><span>  exclude_dirs <span class="op">=</span> <span class="st">"test"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
