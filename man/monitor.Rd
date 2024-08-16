@@ -8,6 +8,7 @@ monitor(
   dir = getwd(),
   file,
   ext = c(".R", ".r"),
+  monitor_hidden = FALSE,
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
@@ -23,6 +24,12 @@ are detected.}
 
 \item{ext}{Character vector. File extensions to watch.
 Defaults to \code{c(".R", ".r")} files.}
+
+\item{monitor_hidden}{Logical. Should hidden files be monitored for changes?
+Default is \code{FALSE}.
+Hidden files are those whose names start with a dot eg. \code{.Renviron}, \code{.env},
+etc.
+This option is especially helpful when \code{ext = "*"}.}
 
 \item{exclude_files}{Character vector. Specific files to ignore. Changes
 to these files will not trigger a script rerun. Default is \code{NULL}.}
@@ -60,6 +67,8 @@ The function runs indefinitely until interrupted.
 rmon::monitor(
   dir = ".",
   file = "app.R",
+  ext = "*",
+  monitor_hidden = TRUE,
   exclude_files = "dev.R",
   exclude_dirs = "test"
 )
