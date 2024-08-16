@@ -37,24 +37,24 @@
 #'
 #' The function runs indefinitely until interrupted.
 #' @examples
-#' \dontrun{
-#' # monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
-#' # any files in 'test/' directory:
-#' rmon::monitor(
-#'   dir = ".",
-#'   file = "app.R",
-#'   exclude_files = "dev.R",
-#'   exclude_dirs = "test"
-#' )
+#' if (interactive()) {
+#'   # monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
+#'   # any files in 'test/' directory:
+#'   rmon::monitor(
+#'     dir = ".",
+#'     file = "app.R",
+#'     exclude_files = "dev.R",
+#'     exclude_dirs = "test"
+#'   )
 #'
-#' # monitor multiple directories, watch only `.R` & `.Rmd` files:
-#' rmon::monitor(
-#'   dir = c("src", "scripts"),
-#'   file = "main.R",
-#'   ext = c(".R", ".Rmd")
-#' )
+#'   # monitor multiple directories, watch only `.R` & `.Rmd` files:
+#'   rmon::monitor(
+#'     dir = c("src", "scripts"),
+#'     file = "main.R",
+#'     ext = c(".R", ".Rmd")
+#'   )
 #' }
-#' @return NULL
+#' @return `NULL`
 #' @export
 monitor <- function(
     dir = getwd(),
