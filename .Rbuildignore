@@ -4,3 +4,4 @@
 ^pkgdown$
 ^dev\.R
 ^\.github$
+^cran-comments\.md$
