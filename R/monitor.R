@@ -11,9 +11,9 @@
 #' @param file String, file path. Path to the R script to rerun when changes
 #' are detected.
 #' @param ext Character vector. File extensions to watch.
-#' Defaults to `c(".R", ".r")` files.
+#' "*" (the default) watches all files in `dir`.
 #' @param monitor_hidden Logical. Should hidden files be monitored for changes?
-#' Default is `FALSE`.
+#' Default is `TRUE`.
 #' Hidden files are those whose names start with a dot eg. `.Renviron`, `.env`,
 #' etc.
 #' This option is especially helpful when `ext = "*"`.
@@ -43,8 +43,6 @@
 #' rmon::monitor(
 #'   dir = ".",
 #'   file = "app.R",
-#'   ext = "*",
-#'   monitor_hidden = TRUE,
 #'   exclude_files = "dev.R",
 #'   exclude_dirs = "test"
 #' )
@@ -61,17 +59,19 @@
 monitor <- function(
     dir = getwd(),
     file,
-    ext = c(".R", ".r"),
-    monitor_hidden = FALSE,
+    ext = "*",
+    monitor_hidden = TRUE,
     exclude_files = NULL,
     exclude_patterns = NULL,
     exclude_dirs = NULL,
     delay = 1) {
-  file <- normalizePath(path = file.path(dir[[1]], file))
+  file <- normalizePath(path = file.path(dir[[1]], file[[1]]))
   if (!file.exists(file)) {
     msg <- sprintf("File '%s' not found!", file)
     stop(msg, call. = FALSE)
   }
+
+  patterns <- paste0(ext, "$", collapse = "|")
 
   now <- function() {
     format(Sys.time(), "%c")
@@ -88,12 +88,6 @@ monitor <- function(
   )
 
   get_file_info <- function() {
-    patterns <- paste0(
-      "\\.",
-      gsub(pattern = "\\.", replacement = "", x = ext),
-      collapse = "|"
-    )
-
     files <- list.files(
       path = dir,
       pattern = patterns,
