@@ -38,16 +38,19 @@ rmon::monitor(
 
 ```r
 rmon::monitor(
-  dir = c(".", "path-to-another-dir"),
+  dir = c("path-to-first-dir", "path-to-another-dir"),
   file = "app.R"
 )
 ```
 
+if multiple directories are specified, `file` is assumed to be in the first
+directory.
+
 # specify extension watch list
 
-by default, `{rmon}` monitors only `.R` files in `dir` for changes.
+by default, `{rmon}` monitors all files in `dir` for changes.
 
-to watch `.R`, `.html`, `.css` and `.js` files:
+to watch only `.R`, `.html`, `.css` and `.js` files, set the `ext` parameter:
 
 ```r
 rmon::monitor(
@@ -56,10 +59,6 @@ rmon::monitor(
   ext = c("R", "html", "css", "js")
 )
 ```
-
-- `ext`: character vector. extensions to watch.
-
-specifying `ext = "*"` watches all files in `dir` for changes.
 
 # ignoring files
 
@@ -73,28 +72,33 @@ rmon::monitor(
 )
 ```
 
-- `exclude_files`: character vector
-
-to ignore the directory `test/` as well:
+to ignore the directory `test/`:
 
 ```r
 rmon::monitor(
   dir = ".",
   file = "app.R",
-  exclude_files = "dev.R"
   exclude_dirs = "test"
 )
 ```
 
-to ignore all files whose names match the pattern `test` as well:
+to ignore all files whose names match the pattern `test`:
 
 ```r
 rmon::monitor(
   dir = ".",
   file = "app.R",
-  exclude_files = "dev.R"
-  exclude_dirs = c("test"),
   exclude_patterns = "test"
+)
+```
+
+to ignore changes to hidden files, set `monitor_hidden = FALSE`:
+
+```r
+rmon::monitor(
+  dir = ".",
+  file = "app.R",
+  monitor_hidden = FALSE
 )
 ```
 
