@@ -1,5 +1,5 @@
 Package: rmon
-Title: Monitor Changes In Source Code And Auto-restart Your Server
+Title: Monitor Changes in Source Code and Auto-Restart Your Server
 Version: 1.0.0
 Authors@R: 
     person("Kennedy", "Mwavu", , "mwavukennedy@gmail.com", role = c("aut", "cre"),
