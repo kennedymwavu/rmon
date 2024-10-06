@@ -81,10 +81,10 @@ monitor <- function(
     strrep(x = "-", times = nchar(example_line))
   }
 
-  cat(
+  message(
     dashes(),
-    sprintf("%s Starting rmon...\n", now()),
-    sep = "\n"
+    "\n",
+    sprintf("%s Starting rmon...\n", now())
   )
 
   get_file_info <- function() {
@@ -143,10 +143,10 @@ monitor <- function(
     if (changed) {
       file_info <- new_file_info
 
-      cat(
+      message(
         dashes(),
-        sprintf("%s Files changed. Restarting...\n", now()),
-        sep = "\n"
+        "\n",
+        sprintf("%s Files changed. Restarting...\n", now())
       )
       p$kill()
 
