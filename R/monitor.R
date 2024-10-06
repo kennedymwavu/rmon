@@ -77,7 +77,8 @@ monitor <- function(
   }
 
   dashes <- function() {
-    "------------------------------------------------------------"
+    example_line <- sprintf("%s Files changed. Restarting...", now())
+    strrep(x = "-", times = nchar(example_line))
   }
 
   cat(
