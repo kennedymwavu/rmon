@@ -120,7 +120,7 @@ monitor <- function(
       files <- files[!files %in% files_to_exclude]
     }
 
-    file.info(files)
+    file.info(files)$mtime
   }
 
 
