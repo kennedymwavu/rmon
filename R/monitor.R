@@ -57,7 +57,7 @@
 #' @return `NULL`
 #' @export
 monitor <- function(
-    dir = getwd(),
+    dir = ".",
     file,
     ext = "*",
     monitor_hidden = TRUE,
