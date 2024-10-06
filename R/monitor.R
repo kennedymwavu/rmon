@@ -65,11 +65,10 @@ monitor <- function(
     exclude_patterns = NULL,
     exclude_dirs = NULL,
     delay = 1) {
-  file <- normalizePath(path = file.path(dir[[1]], file[[1]]))
-  if (!file.exists(file)) {
-    msg <- sprintf("File '%s' not found!", file)
-    stop(msg, call. = FALSE)
-  }
+  file <- normalizePath(
+    path = file.path(dir[[1]], file[[1]]),
+    mustWork = TRUE
+  )
 
   patterns <- paste0(ext, "$", collapse = "|")
 
