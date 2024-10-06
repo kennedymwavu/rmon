@@ -4,12 +4,12 @@ Version: 1.0.0
 Authors@R: 
     person("Kennedy", "Mwavu", , "mwavukennedy@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0006-3157-7234"))
-Description: The 'R' equivalent of 'nodemon'. Monitors changes in your source files and automatically restarts/reruns your server.
+Description: The 'R' equivalent of 'nodemon'. Watches specified directories for file changes and reruns a designated 'R' script when changes are detected. It's designed to automate the process of reloading your 'R' applications during development, similar to 'nodemon' for 'Node.js'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
     processx (>= 3.8.4)
-URL: https://mwavu.com/rmon/, https://github.com/kennedymwavu/rmon
+URL: https://github.com/kennedymwavu/rmon
 BugReports: https://github.com/kennedymwavu/rmon/issues
