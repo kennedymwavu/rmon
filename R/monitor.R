@@ -72,19 +72,16 @@ monitor <- function(
 
   patterns <- paste0(ext, "$", collapse = "|")
 
-  now <- function() {
-    format(Sys.time(), "%c")
-  }
 
   dashes <- function() {
-    example_line <- sprintf("%s Files changed. Restarting...", now())
+    example_line <- sprintf("%s Files changed. Restarting...", current_time())
     strrep(x = "-", times = nchar(example_line))
   }
 
   message(
     dashes(),
     "\n",
-    sprintf("%s Starting rmon...\n", now())
+    sprintf("%s Starting rmon...\n", current_time())
   )
 
   get_file_info <- function() {
@@ -146,7 +143,7 @@ monitor <- function(
       message(
         dashes(),
         "\n",
-        sprintf("%s Files changed. Restarting...\n", now())
+        sprintf("%s Files changed. Restarting...\n", current_time())
       )
       p$kill()
 
@@ -155,4 +152,17 @@ monitor <- function(
 
     Sys.sleep(time = delay)
   }
+}
+
+#' Get current date and time
+#'
+#' @details Retrieves current system date and time, formatted in
+#' a human-readable way.
+#' @examples
+#' current_time()
+#' @return String in the format "YYYY-MM-DD H:M:S" with the
+#' timezone appended at the end.
+#' @noRd
+current_time <- function() {
+  format(x = Sys.time(), format = "%F %T", usetz = TRUE)
 }
