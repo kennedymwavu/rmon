@@ -72,17 +72,7 @@ monitor <- function(
 
   patterns <- paste0(ext, "$", collapse = "|")
 
-
-  dashes <- function() {
-    example_line <- sprintf("%s Files changed. Restarting...", current_time())
-    strrep(x = "-", times = nchar(example_line))
-  }
-
-  message(
-    dashes(),
-    "\n",
-    sprintf("%s Starting rmon...\n", current_time())
-  )
+  dash_and_msg(type = "starting")
 
   get_file_info <- function() {
     files <- list.files(
@@ -120,7 +110,6 @@ monitor <- function(
     file.info(files)$mtime
   }
 
-
   start_new_process <- function() {
     processx::process$new(
       command = "Rscript",
@@ -139,14 +128,8 @@ monitor <- function(
     changed <- !identical(file_info, new_file_info)
     if (changed) {
       file_info <- new_file_info
-
-      message(
-        dashes(),
-        "\n",
-        sprintf("%s Files changed. Restarting...\n", current_time())
-      )
+      dash_and_msg()
       p$kill()
-
       p <- start_new_process()
     }
 
@@ -159,10 +142,43 @@ monitor <- function(
 #' @details Retrieves current system date and time, formatted in
 #' a human-readable way.
 #' @examples
+#' \dontrun{
 #' current_time()
+#' }
 #' @return String in the format "YYYY-MM-DD H:M:S" with the
 #' timezone appended at the end.
 #' @noRd
 current_time <- function() {
   format(x = Sys.time(), format = "%F %T", usetz = TRUE)
+}
+
+#' Show starting/restarting message on console
+#'
+#' @param type String. Type of message to show. Either "restarting"(default) or "starting".
+#' @examples
+#' \dontrun{
+#' dash_and_msg()
+#' }
+#' @return `NULL`
+#' @noRd
+dash_and_msg <- function(type = c("restarting", "starting")) {
+  type <- match.arg(arg = type)
+
+  now <- current_time()
+  restart_msg <- sprintf("%s Files changed. Restarting...", now)
+  start_msg <- sprintf("%s Starting rmon...", now)
+  dashes <- strrep(x = "_", times = nchar(restart_msg))
+
+  msg <- switch(
+    EXPR = type,
+    restarting = restart_msg,
+    starting = start_msg
+  )
+
+  message(
+    dashes,
+    "\n",
+    msg,
+    "\n"
+  )
 }
