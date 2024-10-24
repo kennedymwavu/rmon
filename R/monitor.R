@@ -54,10 +54,10 @@
 #'   ext = c(".R", ".Rmd")
 #' )
 #' }
-#' @return NULL
+#' @return `NULL`
 #' @export
 monitor <- function(
-    dir = getwd(),
+    dir = ".",
     file,
     ext = "*",
     monitor_hidden = TRUE,
@@ -65,27 +65,14 @@ monitor <- function(
     exclude_patterns = NULL,
     exclude_dirs = NULL,
     delay = 1) {
-  file <- normalizePath(path = file.path(dir[[1]], file[[1]]))
-  if (!file.exists(file)) {
-    msg <- sprintf("File '%s' not found!", file)
-    stop(msg, call. = FALSE)
-  }
+  file <- normalizePath(
+    path = file.path(dir[[1]], file[[1]]),
+    mustWork = TRUE
+  )
 
   patterns <- paste0(ext, "$", collapse = "|")
 
-  now <- function() {
-    format(Sys.time(), "%c")
-  }
-
-  dashes <- function() {
-    "---------------------------------------------------------"
-  }
-
-  cat(
-    dashes(),
-    sprintf("%s Starting rmon...\n", now()),
-    sep = "\n"
-  )
+  dash_and_msg(type = "starting")
 
   get_file_info <- function() {
     files <- list.files(
@@ -120,9 +107,8 @@ monitor <- function(
       files <- files[!files %in% files_to_exclude]
     }
 
-    file.info(files)
+    file.info(files)$mtime
   }
-
 
   start_new_process <- function() {
     processx::process$new(
@@ -142,17 +128,57 @@ monitor <- function(
     changed <- !identical(file_info, new_file_info)
     if (changed) {
       file_info <- new_file_info
-
-      cat(
-        dashes(),
-        sprintf("%s Files changed. Restarting...\n", now()),
-        sep = "\n"
-      )
+      dash_and_msg()
       p$kill()
-
       p <- start_new_process()
     }
 
     Sys.sleep(time = delay)
   }
+}
+
+#' Get current date and time
+#'
+#' @details Retrieves current system date and time, formatted in
+#' a human-readable way.
+#' @examples
+#' \dontrun{
+#' current_time()
+#' }
+#' @return String in the format "YYYY-MM-DD H:M:S" with the
+#' timezone appended at the end.
+#' @noRd
+current_time <- function() {
+  format(x = Sys.time(), format = "%F %T", usetz = TRUE)
+}
+
+#' Show starting/restarting message on console
+#'
+#' @param type String. Type of message to show. Either "restarting"(default) or "starting".
+#' @examples
+#' \dontrun{
+#' dash_and_msg()
+#' }
+#' @return `NULL`
+#' @noRd
+dash_and_msg <- function(type = c("restarting", "starting")) {
+  type <- match.arg(arg = type)
+
+  now <- current_time()
+  restart_msg <- sprintf("%s Files changed. Restarting...", now)
+  start_msg <- sprintf("%s Starting rmon...", now)
+  dashes <- strrep(x = "_", times = nchar(restart_msg))
+
+  msg <- switch(
+    EXPR = type,
+    restarting = restart_msg,
+    starting = start_msg
+  )
+
+  message(
+    dashes,
+    "\n",
+    msg,
+    "\n"
+  )
 }

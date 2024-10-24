@@ -1,5 +1,10 @@
 # rmon
 
+  <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/rmon)](https://CRAN.R-project.org/package=rmon)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+  <!-- badges: end -->
+
 R's equivalent of [nodemon](https://nodemon.io/). Designed to make development easier by automatically reloading your R scripts and applications.
 
 can be used to auto-reload:
@@ -15,6 +20,12 @@ can be used to auto-reload:
 just like nodemon, **rmon** is perfect for development.
 
 # installation
+
+to install the package from CRAN use:
+
+```r
+install.packages("rmon")
+```
 
 install the dev version from GitHub:
 

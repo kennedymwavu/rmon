@@ -5,7 +5,7 @@
 \title{Monitor files for changes and rerun specified script}
 \usage{
 monitor(
-  dir = getwd(),
+  dir = ".",
   file,
   ext = "*",
   monitor_hidden = TRUE,
@@ -43,6 +43,9 @@ monitoring. Default is \code{NULL}.}
 
 \item{delay}{Numeric. Number of seconds to wait before checking
 for file changes. Defaults to \code{1}.}
+}
+\value{
+\code{NULL}
 }
 \description{
 Monitors specified directories for file changes and reruns a designated
