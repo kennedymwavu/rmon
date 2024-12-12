@@ -8,7 +8,7 @@ monitor(
   dir = ".",
   file,
   ext = "*",
-  monitor_hidden = TRUE,
+  monitor_hidden = FALSE,
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
@@ -26,7 +26,7 @@ are detected.}
 "*" (the default) watches all files in \code{dir}.}
 
 \item{monitor_hidden}{Logical. Should hidden files be monitored for changes?
-Default is \code{TRUE}.
+Default is \code{FALSE}.
 Hidden files are those whose names start with a dot eg. \code{.Renviron}, \code{.env},
 etc.
 This option is especially helpful when \code{ext = "*"}.}
