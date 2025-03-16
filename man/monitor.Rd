@@ -5,7 +5,7 @@
 \title{Monitor files for changes and rerun specified script}
 \usage{
 monitor(
-  dir = ".",
+  dir,
   file,
   ext = "*",
   monitor_hidden = FALSE,
@@ -16,8 +16,7 @@ monitor(
 )
 }
 \arguments{
-\item{dir}{Character vector. Directory or directories to monitor for changes.
-Defaults to the current working directory.}
+\item{dir}{Character vector. Directory or directories to monitor for changes.}
 
 \item{file}{String, file path. Path to the R script to rerun when changes
 are detected.}
@@ -64,7 +63,7 @@ directory.
 The function runs indefinitely until interrupted.
 }
 \examples{
-\dontrun{
+if (interactive()) {
 # monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
 # any files in 'test/' directory:
 rmon::monitor(

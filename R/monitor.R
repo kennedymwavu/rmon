@@ -7,7 +7,6 @@
 #' for Node.js.
 #'
 #' @param dir Character vector. Directory or directories to monitor for changes.
-#' Defaults to the current working directory.
 #' @param file String, file path. Path to the R script to rerun when changes
 #' are detected.
 #' @param ext Character vector. File extensions to watch.
@@ -57,7 +56,7 @@
 #' @return `NULL`
 #' @export
 monitor <- function(
-  dir = ".",
+  dir,
   file,
   ext = "*",
   monitor_hidden = FALSE,
@@ -154,7 +153,8 @@ current_time <- function() {
 
 #' Show starting/restarting message on console
 #'
-#' @param type String. Type of message to show. Either "restarting"(default) or "starting".
+#' @param type String. Type of message to show. Either "restarting"(default)
+#' or "starting".
 #' @examples
 #' dash_and_msg()
 #' @return `NULL`
