@@ -7,7 +7,6 @@
 #' for Node.js.
 #'
 #' @param dir Character vector. Directory or directories to monitor for changes.
-#' Defaults to the current working directory.
 #' @param file String, file path. Path to the R script to rerun when changes
 #' are detected.
 #' @param ext Character vector. File extensions to watch.
@@ -37,7 +36,7 @@
 #'
 #' The function runs indefinitely until interrupted.
 #' @examples
-#' \dontrun{
+#' if (interactive()) {
 #' # monitor current directory, rerun 'app.R' on changes, ignore 'dev.R' and
 #' # any files in 'test/' directory:
 #' rmon::monitor(
@@ -57,14 +56,15 @@
 #' @return `NULL`
 #' @export
 monitor <- function(
-    dir = ".",
-    file,
-    ext = "*",
-    monitor_hidden = FALSE,
-    exclude_files = NULL,
-    exclude_patterns = NULL,
-    exclude_dirs = NULL,
-    delay = 1) {
+  dir,
+  file,
+  ext = "*",
+  monitor_hidden = FALSE,
+  exclude_files = NULL,
+  exclude_patterns = NULL,
+  exclude_dirs = NULL,
+  delay = 1
+) {
   file <- normalizePath(
     path = file.path(dir[[1]], file[[1]]),
     mustWork = TRUE
@@ -142,11 +142,10 @@ monitor <- function(
 #' @details Retrieves current system date and time, formatted in
 #' a human-readable way.
 #' @examples
-#' \dontrun{
 #' current_time()
-#' }
 #' @return String in the format "YYYY-MM-DD H:M:S" with the
 #' timezone appended at the end.
+#' @keywords internal
 #' @noRd
 current_time <- function() {
   format(x = Sys.time(), format = "%F %T", usetz = TRUE)
@@ -154,12 +153,12 @@ current_time <- function() {
 
 #' Show starting/restarting message on console
 #'
-#' @param type String. Type of message to show. Either "restarting"(default) or "starting".
+#' @param type String. Type of message to show. Either "restarting"(default)
+#' or "starting".
 #' @examples
-#' \dontrun{
 #' dash_and_msg()
-#' }
 #' @return `NULL`
+#' @keywords internal
 #' @noRd
 dash_and_msg <- function(type = c("restarting", "starting")) {
   type <- match.arg(arg = type)
