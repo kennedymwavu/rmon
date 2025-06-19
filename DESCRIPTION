@@ -14,6 +14,8 @@ URL: https://github.com/kennedymwavu/rmon
 BugReports: https://github.com/kennedymwavu/rmon/issues
 Imports: 
     processx (>= 3.8.4)
+Suggests: 
+    testthat (>= 3.2.3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
