@@ -1,5 +1,11 @@
 # rmon
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/kennedymwavu/rmon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kennedymwavu/rmon/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/rmon)](https://CRAN.R-project.org/package=rmon)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+<!-- badges: end -->
+
 R's equivalent of [nodemon](https://nodemon.io/). Designed to make development easier by automatically reloading your R scripts and applications or executing arbitrary R expressions when files change.
 
 can be used to:
