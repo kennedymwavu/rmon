@@ -44,8 +44,8 @@ rmon::monitor(
 
 ```r
 rmon::monitor(dir = ".", expr = {
-  cat('Files changed at:', as.character(Sys.time()), '\n')
-  # Your custom R code here
+  cat('my custom expression at:', as.character(Sys.time()), '\n')
+  # ... rest of your R code here
 })
 ```
 
@@ -150,8 +150,9 @@ rmon::monitor(
 
 ```r
 rmon::monitor(dir = ".", expr = {
-  print("Files changed!")
+  cat("reading some csv file...\n")
   data <- read.csv("data.csv")
+  cat("summarizing file contents...\n")
   summary(data)
 })
 ```
@@ -161,30 +162,45 @@ rmon::monitor(dir = ".", expr = {
 ### error handling
 
 ```r
-rmon::monitor(dir = ".", expr = {
-  tryCatch({
-    source("functions.R")
-    cat("Functions reloaded successfully\n")
-  }, error = function(e) {
-    cat("Error reloading functions:", e$message, "\n")
-  })
-}, on_error = "continue")  # or "stop"
+rmon::monitor(
+  dir = ".",
+  expr = {
+    tryCatch(
+      {
+        source("functions.R")
+        cat("Functions reloaded successfully\n")
+      },
+      error = function(e) {
+        cat("Error reloading functions:", e$message, "\n")
+      }
+    )
+  },
+  on_error = "continue" # or "stop"
+)
 ```
 
 ### output control
 
 ```r
 # capture and display output (default)
-rmon::monitor(dir = ".", expr = {
-  result <- some_analysis()
-  print(result)
-}, capture_output = TRUE)
+rmon::monitor(
+  dir = ".",
+  expr = {
+    result <- some_analysis()
+    print(result)
+  },
+  capture_output = TRUE
+)
 
 # silent execution
-rmon::monitor(dir = ".", expr = {
-  log_entry <- paste(Sys.time(), "- Files changed")
-  cat(log_entry, file = "changes.log", append = TRUE)
-}, capture_output = FALSE)
+rmon::monitor(
+  dir = ".",
+  expr = {
+    log_entry <- paste(Sys.time(), "- Files changed")
+    cat(log_entry, file = "changes.log", append = TRUE)
+  },
+  capture_output = FALSE
+)
 ```
 
 ### watch specific file types
@@ -195,7 +211,7 @@ rmon::monitor(
   ext = c("R", "Rmd"),
   expr = {
     cat("R or Rmd file changed!\n")
-    # Rebuild documentation, run tests, etc.
+    # rebuild documentation, run tests, etc.
   }
 )
 ```
