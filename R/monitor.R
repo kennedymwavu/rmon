@@ -5,6 +5,8 @@
 #' R script or executes an arbitrary R expression when changes are detected.
 #' It's designed to automate the process of reloading your R applications during
 #' development, similar to nodemon for Node.js.
+#' 
+#' @importFrom utils capture.output
 #'
 #' @param dir Character vector. Directory or directories to monitor for changes.
 #' @param file String, file path. Path to the R script to rerun when changes
