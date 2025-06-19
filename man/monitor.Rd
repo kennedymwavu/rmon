@@ -2,24 +2,31 @@
 % Please edit documentation in R/monitor.R
 \name{monitor}
 \alias{monitor}
-\title{Monitor files for changes and rerun specified script}
+\title{Monitor files for changes and rerun specified script or execute R expression}
 \usage{
 monitor(
   dir,
-  file,
+  file = NULL,
+  expr = NULL,
   ext = "*",
   monitor_hidden = FALSE,
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
-  delay = 1
+  delay = 1,
+  capture_output = TRUE,
+  on_error = c("continue", "stop")
 )
 }
 \arguments{
 \item{dir}{Character vector. Directory or directories to monitor for changes.}
 
 \item{file}{String, file path. Path to the R script to rerun when changes
-are detected.}
+are detected. Mutually exclusive with \code{expr}.}
+
+\item{expr}{String or expression. R expression to execute when changes are
+detected. Can be a string containing R code or an R expression object.
+Mutually exclusive with \code{file}.}
 
 \item{ext}{Character vector. File extensions to watch.
 "*" (the default) watches all files in \code{dir}.}
@@ -42,15 +49,22 @@ monitoring. Default is \code{NULL}.}
 
 \item{delay}{Numeric. Number of seconds to wait before checking
 for file changes. Defaults to \code{1}.}
+
+\item{capture_output}{Logical. When using \code{expr}, should the output be
+captured and displayed? Default is \code{TRUE}.}
+
+\item{on_error}{Character. What to do when expression execution fails.
+Options are "continue" (default) to keep monitoring, or "stop" to halt
+monitoring.}
 }
 \value{
 \code{NULL}
 }
 \description{
-Monitors specified directories for file changes and reruns a designated
-R script when changes are detected. It's designed to automate the process
-of reloading your R applications during development, similar to nodemon
-for Node.js.
+Monitors specified directories for file changes and either reruns a designated
+R script or executes an arbitrary R expression when changes are detected.
+It's designed to automate the process of reloading your R applications during
+development, similar to nodemon for Node.js.
 }
 \details{
 The monitoring process can be customized by excluding specific files, file
@@ -59,6 +73,9 @@ that shouldn't trigger a reload (eg. temporary files, log files, etc.).
 
 If multiple directories are supplied, \code{file} is assumed to be in the first
 directory.
+
+When using \code{expr}, the expression is evaluated in the current R session's
+global environment. This allows access to all loaded packages and variables.
 
 The function runs indefinitely until interrupted.
 }
@@ -78,6 +95,25 @@ rmon::monitor(
   dir = c("src", "scripts"),
   file = "main.R",
   ext = c(".R", ".Rmd")
+)
+
+# execute expression with natural R syntax:
+rmon::monitor(dir = ".", expr = {
+  data <- read.csv("data.csv")
+  summary(data)
+})
+
+# execute an R expression when files change:
+rmon::monitor(
+  dir = ".",
+  expr = "print('Woohoo!'); data <- read.csv('data.csv')"
+)
+
+# execute expression without capturing output:
+rmon::monitor(
+  dir = ".",
+  expr = "source('reload_functions.R')",
+  capture_output = FALSE
 )
 }
 }

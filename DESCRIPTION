@@ -1,6 +1,6 @@
 Package: rmon
 Title: Monitor Changes in Source Code and Auto-Restart Your Server
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     person("Kennedy", "Mwavu", , "mwavukennedy@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0006-3157-7234"))
@@ -14,6 +14,8 @@ URL: https://github.com/kennedymwavu/rmon
 BugReports: https://github.com/kennedymwavu/rmon/issues
 Imports: 
     processx (>= 3.8.4)
+Suggests: 
+    testthat (>= 3.2.3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

@@ -1,16 +1,17 @@
 # rmon
 
-R's equivalent of [nodemon](https://nodemon.io/). Designed to make development easier by automatically reloading your R scripts and applications.
+R's equivalent of [nodemon](https://nodemon.io/). Designed to make development easier by automatically reloading your R scripts and applications or executing arbitrary R expressions when files change.
 
-can be used to auto-reload:
+can be used to:
 
-- arbitrary R scripts
-- apps & apis:
+- auto-reload arbitrary R scripts
+- execute custom R expressions on file changes
+- auto-reload apps & apis:
   - shiny
   - ambiorix
   - plumber
 
-**rmon** will monitor your source files for any changes and automatically restart/rerun your server. this allows you to focus on coding without manually restarting your server every time you make a change.
+**rmon** will monitor your source files for any changes and automatically restart/rerun your server or execute your custom R code. this allows you to focus on coding without manually restarting your server every time you make a change.
 
 just like nodemon, **rmon** is perfect for development.
 
@@ -30,6 +31,8 @@ remotes::install_github(repo = "kennedymwavu/rmon")
 
 # usage
 
+## monitoring R scripts
+
 ```r
 rmon::monitor(
   dir = ".",
@@ -37,8 +40,20 @@ rmon::monitor(
 )
 ```
 
+## executing R expressions
+
+```r
+rmon::monitor(dir = ".", expr = {
+  cat('my custom expression at:', as.character(Sys.time()), '\n')
+  # ... rest of your R code here
+})
+```
+
+**parameters:**
+
 - `dir`: character vector. directory to monitor for changes
-- `file`: file to rerun when changes are detected in the directory
+- `file`: file to rerun when changes are detected (mutually exclusive with `expr`)
+- `expr`: R expression to execute when changes are detected (mutually exclusive with `file`)
 
 # monitoring multiple directories
 
@@ -126,3 +141,77 @@ rmon::monitor(
 ```
 
 - `delay`: a length one numeric. number of seconds to wait before checking for file changes again.
+
+# executing expressions
+
+**rmon** now supports executing arbitrary R expressions when files change, providing more flexibility than just rerunning scripts.
+
+## basic expression execution
+
+```r
+rmon::monitor(dir = ".", expr = {
+  cat("reading some csv file...\n")
+  data <- read.csv("data.csv")
+  cat("summarizing file contents...\n")
+  summary(data)
+})
+```
+
+## advanced expression features
+
+### error handling
+
+```r
+rmon::monitor(
+  dir = ".",
+  expr = {
+    tryCatch(
+      {
+        source("functions.R")
+        cat("Functions reloaded successfully\n")
+      },
+      error = function(e) {
+        cat("Error reloading functions:", e$message, "\n")
+      }
+    )
+  },
+  on_error = "continue" # or "stop"
+)
+```
+
+### output control
+
+```r
+# capture and display output (default)
+rmon::monitor(
+  dir = ".",
+  expr = {
+    result <- some_analysis()
+    print(result)
+  },
+  capture_output = TRUE
+)
+
+# silent execution
+rmon::monitor(
+  dir = ".",
+  expr = {
+    log_entry <- paste(Sys.time(), "- Files changed")
+    cat(log_entry, file = "changes.log", append = TRUE)
+  },
+  capture_output = FALSE
+)
+```
+
+### watch specific file types
+
+```r
+rmon::monitor(
+  dir = ".",
+  ext = c("R", "Rmd"),
+  expr = {
+    cat("R or Rmd file changed!\n")
+    # rebuild documentation, run tests, etc.
+  }
+)
+```

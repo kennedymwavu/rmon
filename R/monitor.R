@@ -1,14 +1,19 @@
-#' Monitor files for changes and rerun specified script
+#' Monitor files for changes and rerun specified script or execute R expression
 #'
 #' @description
-#' Monitors specified directories for file changes and reruns a designated
-#' R script when changes are detected. It's designed to automate the process
-#' of reloading your R applications during development, similar to nodemon
-#' for Node.js.
+#' Monitors specified directories for file changes and either reruns a designated
+#' R script or executes an arbitrary R expression when changes are detected.
+#' It's designed to automate the process of reloading your R applications during
+#' development, similar to nodemon for Node.js.
+#' 
+#' @importFrom utils capture.output
 #'
 #' @param dir Character vector. Directory or directories to monitor for changes.
 #' @param file String, file path. Path to the R script to rerun when changes
-#' are detected.
+#' are detected. Mutually exclusive with `expr`.
+#' @param expr String or expression. R expression to execute when changes are
+#' detected. Can be a string containing R code or an R expression object.
+#' Mutually exclusive with `file`.
 #' @param ext Character vector. File extensions to watch.
 #' "*" (the default) watches all files in `dir`.
 #' @param monitor_hidden Logical. Should hidden files be monitored for changes?
@@ -25,6 +30,11 @@
 #' monitoring. Default is `NULL`.
 #' @param delay Numeric. Number of seconds to wait before checking
 #' for file changes. Defaults to `1`.
+#' @param capture_output Logical. When using `expr`, should the output be
+#' captured and displayed? Default is `TRUE`.
+#' @param on_error Character. What to do when expression execution fails.
+#' Options are "continue" (default) to keep monitoring, or "stop" to halt
+#' monitoring.
 #'
 #' @details
 #' The monitoring process can be customized by excluding specific files, file
@@ -33,6 +43,9 @@
 #'
 #' If multiple directories are supplied, `file` is assumed to be in the first
 #' directory.
+#'
+#' When using `expr`, the expression is evaluated in the current R session's
+#' global environment. This allows access to all loaded packages and variables.
 #'
 #' The function runs indefinitely until interrupted.
 #' @examples
@@ -52,23 +65,80 @@
 #'   file = "main.R",
 #'   ext = c(".R", ".Rmd")
 #' )
+#'
+#' # execute expression with natural R syntax:
+#' rmon::monitor(dir = ".", expr = {
+#'   data <- read.csv("data.csv")
+#'   summary(data)
+#' })
+#'
+#' # execute an R expression when files change:
+#' rmon::monitor(
+#'   dir = ".",
+#'   expr = "print('Woohoo!'); data <- read.csv('data.csv')"
+#' )
+#'
+#' # execute expression without capturing output:
+#' rmon::monitor(
+#'   dir = ".",
+#'   expr = "source('reload_functions.R')",
+#'   capture_output = FALSE
+#' )
 #' }
 #' @return `NULL`
 #' @export
 monitor <- function(
   dir,
-  file,
+  file = NULL,
+  expr = NULL,
   ext = "*",
   monitor_hidden = FALSE,
   exclude_files = NULL,
   exclude_patterns = NULL,
   exclude_dirs = NULL,
-  delay = 1
+  delay = 1,
+  capture_output = TRUE,
+  on_error = c("continue", "stop")
 ) {
-  file <- normalizePath(
-    path = file.path(dir[[1]], file[[1]]),
-    mustWork = TRUE
-  )
+  on_error <- match.arg(on_error)
+
+  original_expr <- substitute(expr)
+
+  if (is.null(file) && is.null(original_expr)) {
+    stop("Either 'file' or 'expr' must be provided", call. = FALSE)
+  }
+
+  if (!is.null(file) && !is.null(original_expr)) {
+    stop(
+      "'file' and 'expr' are mutually exclusive. Provide only one.",
+      call. = FALSE
+    )
+  }
+
+  if (!is.null(file)) {
+    file <- normalizePath(
+      path = file.path(dir[[1]], file[[1]]),
+      mustWork = TRUE
+    )
+  }
+
+  # Validate expression if provided
+  if (!is.null(original_expr)) {
+    is_valid <- is.character(original_expr) ||
+      is.expression(original_expr) ||
+      is.language(original_expr)
+
+    if (!is_valid) {
+      stop(
+        "'expr' must be a character string, expression, or language object",
+        call. = FALSE
+      )
+    }
+
+    if (is.character(original_expr) && length(original_expr) != 1) {
+      stop("'expr' must be a single character string", call. = FALSE)
+    }
+  }
 
   patterns <- paste0(ext, "$", collapse = "|")
 
@@ -110,6 +180,54 @@ monitor <- function(
     file.info(files)$mtime
   }
 
+  execute_expression <- function() {
+    if (capture_output) {
+      output <- capture.output({
+        result <- tryCatch(
+          {
+            if (is.character(original_expr)) {
+              eval(parse(text = original_expr), envir = .GlobalEnv)
+            } else {
+              eval(original_expr, envir = .GlobalEnv)
+            }
+          },
+          error = function(e) {
+            message("Expression execution failed: ", e$message)
+            if (on_error == "stop") {
+              stop("Stopping monitoring due to expression error", call. = FALSE)
+            }
+
+            NULL
+          }
+        )
+
+        if (!is.null(result)) {
+          print(result)
+        }
+      })
+
+      if (length(output) > 0) {
+        cat(paste(output, collapse = "\n"), "\n")
+      }
+    } else {
+      tryCatch(
+        {
+          if (is.character(original_expr)) {
+            eval(parse(text = original_expr), envir = .GlobalEnv)
+          } else {
+            eval(original_expr, envir = .GlobalEnv)
+          }
+        },
+        error = function(e) {
+          message("Expression execution failed: ", e$message)
+          if (on_error == "stop") {
+            stop("Stopping monitoring due to expression error", call. = FALSE)
+          }
+        }
+      )
+    }
+  }
+
   start_new_process <- function() {
     processx::process$new(
       command = "Rscript",
@@ -120,8 +238,14 @@ monitor <- function(
   }
 
   file_info <- get_file_info()
-  p <- start_new_process()
-  on.exit(p$kill())
+
+  # Initialize process or execute expression for the first time
+  if (!is.null(file)) {
+    p <- start_new_process()
+    on.exit(p$kill())
+  } else {
+    execute_expression()
+  }
 
   repeat {
     new_file_info <- get_file_info()
@@ -129,8 +253,13 @@ monitor <- function(
     if (changed) {
       file_info <- new_file_info
       dash_and_msg()
-      p$kill()
-      p <- start_new_process()
+
+      if (!is.null(file)) {
+        p$kill()
+        p <- start_new_process()
+      } else {
+        execute_expression()
+      }
     }
 
     Sys.sleep(time = delay)
