@@ -2,4 +2,4 @@ url: http://mwavu.com/rmon/
 template:
   bootstrap: 5
   bootswatch: zephyr
-
+  light-switch: yes
