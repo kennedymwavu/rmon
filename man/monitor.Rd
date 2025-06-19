@@ -97,10 +97,16 @@ rmon::monitor(
   ext = c(".R", ".Rmd")
 )
 
+# execute expression with natural R syntax:
+rmon::monitor(dir = ".", expr = {
+  data <- read.csv("data.csv")
+  summary(data)
+})
+
 # execute an R expression when files change:
 rmon::monitor(
   dir = ".",
-  expr = "print('Files changed! Reloading data...'); data <- read.csv('data.csv')"
+  expr = "print('Woohoo!'); data <- read.csv('data.csv')"
 )
 
 # execute expression without capturing output:
@@ -108,13 +114,6 @@ rmon::monitor(
   dir = ".",
   expr = "source('reload_functions.R')",
   capture_output = FALSE
-)
-
-# execute complex expression with error handling:
-rmon::monitor(
-  dir = ".",
-  expr = "tryCatch(reload_app(), error = function(e) message('Reload failed'))",
-  on_error = "continue"
 )
 }
 }
